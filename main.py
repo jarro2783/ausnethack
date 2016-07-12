@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 import sqlite3
+import wwwnethack as wwwnh
 
 app = Flask(__name__)
 app.config.from_object("wwwconfig")
@@ -41,11 +42,6 @@ def calculate_z(n):
 
     return z
 
-class ZScore:
-    def __init__(self, plname, zscore):
-        self.plname = plname
-        self.zscore = zscore
-
 @app.route("/zscores")
 def zscores():
     conn = sql_connect("360")
@@ -67,7 +63,7 @@ def zscores():
     score_list = []
 
     for player in sorted(scores.keys()):
-        score_list.append(ZScore(player, scores[player]))
+        score_list.append(wwwnh.ZScore(player, scores[player]))
 
     return render_template("zscores.html", scores = score_list)
 
