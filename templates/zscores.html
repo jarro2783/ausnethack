@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Z-scores</h1>
+<table>
+<tr>
+  <th>Player</th>
+  <th>Z-score</th>
+</tr>
+{% for s in scores %}
+<tr>
+  <td>{{ s.plname }}</td>
+  <td>{{ s.zscore }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
