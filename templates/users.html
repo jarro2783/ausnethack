@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block body %}
+<table>
+<tr>
+  <th>User</th>
+  <th>Games</th>
+  <th>Time playing</th>
+</tr>
+{% for user in users %}
+<tr>
+  <td>{{user.plname}}</td>
+  <td>{{user.numgames}}</td>
+  <td>{{user.total}}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
