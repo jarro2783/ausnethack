@@ -53,10 +53,12 @@ def zscores():
     """).fetchall()
 
     scores = {}
+    roles = {}
 
     for r in rows:
         plname = r['plname']
         role = r['role']
+        roles[role] = 0
         if plname not in scores:
             scores[plname] = {'roles' : {}, 'total' : 0}
         zscore = calculate_z(r['number'])
@@ -68,7 +70,8 @@ def zscores():
     for player in sorted(scores.keys()):
         score_list.append(wwwnh.ZScore(player, scores[player]))
 
-    return render_template("zscores.html", scores = score_list)
+    return render_template("zscores.html", scores = score_list,
+      roles = sorted(roles.keys()))
 
 if __name__ == "__main__":
     app.run(debug=True)

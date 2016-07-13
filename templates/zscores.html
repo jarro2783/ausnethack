@@ -4,18 +4,24 @@
 <table>
 <tr>
   <th>Player</th>
-  <th>Z-score</th>
-  <th>Roles</th>
+  {% for role in roles %}
+    <th>{{ role }}</th>
+  {% endfor %}
+  <th>Total</th>
 </tr>
 {% for s in scores %}
 <tr>
   <td>{{ s.plname }}</td>
-  <td>{{ s.zscore.total }}</td>
+  {% for role in roles %}
   <td>
-  {% for role in s.zscore.roles %}
-  {{ role }}: {{ s.zscore.roles[role] }}
-  {% endfor %}
+  {% if s.zscore.roles[role] is defined %}
+    {{ s.zscore.roles[role] }}
+  {% else %}
+    0.0
+  {% endif %}
   </td>
+  {% endfor %}
+  <td>{{ s.zscore.total }}</td>
 </tr>
 {% endfor %}
 </table>
