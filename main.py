@@ -47,7 +47,7 @@ def zscores():
     conn = sql_connect("360")
     cursor = conn.cursor()
     rows = cursor.execute("""
-        SELECT plname, COUNT(ascended) AS number FROM games 
+        SELECT plname, COUNT(ascended) AS number, role FROM games 
         WHERE ascended = 1
         GROUP BY plname, role
     """).fetchall()
@@ -56,9 +56,12 @@ def zscores():
 
     for r in rows:
         plname = r['plname']
+        role = r['role']
         if plname not in scores:
-            scores[plname] = 0
-        scores[r['plname']] += calculate_z(r['number'])
+            scores[plname] = {'roles' : {}, 'total' : 0}
+        zscore = calculate_z(r['number'])
+        scores[plname]["total"] += zscore
+        scores[plname]['roles'][role] = zscore
 
     score_list = []
 
