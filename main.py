@@ -11,6 +11,11 @@ def sql_connect(game):
     conn.row_factory = sqlite3.Row
     return conn
 
+def sql_query(game, query):
+    conn = sql_connect(game)
+    cursor = conn.cursor()
+    return cursor.execute(query).fetchall()
+
 @app.route('/')
 def main():
     #app.config.update(dict(title="nethack"))
@@ -21,8 +26,8 @@ def users():
     sql = sql_connect("360")
     c = sql.cursor()
     games = c.execute("""
-      SELECT SUM(sessions.end_time - sessions.start_time) AS total, 
-        plname, 
+      SELECT SUM(sessions.end_time - sessions.start_time) AS total,
+        plname,
         COUNT(DISTINCT games.id) AS numgames
       FROM games JOIN sessions ON games.id = sessions.game GROUP BY plname
     """
@@ -47,7 +52,7 @@ def zscores():
     conn = sql_connect("360")
     cursor = conn.cursor()
     rows = cursor.execute("""
-        SELECT plname, COUNT(ascended) AS number, role FROM games 
+        SELECT plname, COUNT(ascended) AS number, role FROM games
         WHERE ascended = 1
         GROUP BY plname, role
     """).fetchall()
@@ -72,6 +77,21 @@ def zscores():
 
     return render_template("zscores.html", scores = score_list,
       roles = sorted(roles.keys()))
+
+@app.route("/high_scores")
+def high_scores():
+    scores = sql_query("360",
+      """
+      SELECT games.*,
+        sum(sessions.end_time - sessions.start_time) AS total_time
+      FROM games JOIN sessions ON sessions.game = games.id
+      WHERE score NOT NULL
+      GROUP BY games.id
+      ORDER BY score DESC LIMIT 2000
+      """
+    )
+
+    return render_template("high_scores.html", scores = scores)
 
 if __name__ == "__main__":
     app.run(debug=True)

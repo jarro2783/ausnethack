@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block body %}
+<table>
+<tr>
+    <th>Player</th>
+    <th>Role</th>
+    <th>Race</th>
+    <th>Alignment</th>
+    <th>Gender</th>
+    <th>Start Time</th>
+    <th>End Time</th>
+    <th>Total playing time</th>
+    <th>Score</th>
+</tr>
+{% for score in scores %}
+<tr>
+    <td>{{ score.plname }}</td>
+    <td>{{ score.role }}</td>
+    <td>{{ score.race }}</td>
+    <td>{{ score.alignment }}</td>
+    <td>{{ score.gender }}</td>
+    <td>{{ score.start_time }}</td>
+    <td>{{ score.end_time }}</td>
+    <td>{{ score.total_time }}</td>
+    <td>{{ score.score }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
