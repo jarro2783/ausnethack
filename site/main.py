@@ -2,7 +2,7 @@ from flask import Flask, render_template
 import sqlite3
 import wwwnethack as wwwnh
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../static")
 app.config.from_object("wwwconfig")
 #app.config.servername = "AusNethack"
 
