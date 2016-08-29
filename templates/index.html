@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
-<p>Welcome to AusNethack, Australia's first 
-<a href="http://www.nethack.com">NetHack</a> server.</p>
+<p>Welcome to AusNethack, Australia's first
+<a href="http://www.nethack.org">NetHack</a> server.</p>
 
 <h1>The Server</h1>
 
@@ -10,6 +10,24 @@ To play NetHack, simply run the following in your console:
 <pre>
 ssh play@ausnethack.com
 </pre>
+
+<h1>What is AusNethack?</h1>
+
+AusNethack is Australia's first public
+<a href="http://www.nethack.org">Nethack</a> server. There is already a great
+<a href="https://alt.org/nethack">Nethack server at alt.org</a>.
+Unfortunately it is hosted on the East coast of the USA, so the latency is
+a bit too high for the other side of the world. Hence, AusNethack was born to
+provide a fast server for the Oceanic region of the world.
+
+Building a complete working server is a big job, so this site is a
+little light on functionality. The aim is for everything that
+<span class="emphasize">is</span> here to be
+correct. If you find any bugs the please {% include "contact_us.html" %} or
+submit a pull request on our github repository.
+
+We are also experimenting with the sorts of game statistics that are useful,
+so {% include "contact_us.html" %} if you have any ideas or requests.
 
 <h1>Stats</h1>
 <p><a href="/users">Users</a></p>

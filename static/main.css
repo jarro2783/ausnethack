@@ -24,3 +24,7 @@ div.title-block {
     display: inline-block;
     width: 200px
 }
+
+.emphasize {
+    text-decoration: underline
+}
