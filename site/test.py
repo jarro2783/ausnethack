@@ -7,7 +7,7 @@ class TestZScore(unittest.TestCase):
         self.assertEqual(wwwnethack.calculate_z(2), 1.5)
         self.assertEqual(wwwnethack.calculate_z(3), 1.75)
 
-    def test_scores(self):
+    def test_basic_scores(self):
         ascended = [
             {'plname': 'a', 'role': 'Wizard', 'number': 1},
             {'plname': 'b', 'role': 'Ranger', 'number': 1},
