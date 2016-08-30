@@ -55,7 +55,7 @@ def zscores():
         score_list.append(wwwnh.ZScore(player, scores[player]))
 
     return render_template("zscores.html", scores = score_list,
-      roles = sorted(roles.keys()))
+      roles = roles))
 
 @app.route('/high_scores')
 def high_scores():
