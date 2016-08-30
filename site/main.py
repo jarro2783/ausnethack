@@ -3,9 +3,9 @@ import flask
 import sqlite3
 import wwwnethack as wwwnh
 
-app = Flask(__name__, static_folder="../static")
-app.config.from_object("wwwconfig")
-#app.config.servername = "AusNethack"
+app = Flask(__name__, static_folder='../static')
+app.config.from_object('wwwconfig')
+#app.config.servername = 'AusNethack'
 
 def sql_connect(game):
     conn = sqlite3.connect(app.config['NETHACKDB'][game])
@@ -19,12 +19,12 @@ def sql_query(game, query):
 
 @app.route('/')
 def main():
-    #app.config.update(dict(title="nethack"))
-    return render_template("index.html")
+    #app.config.update(dict(title='nethack'))
+    return render_template('index.html')
 
-@app.route("/users")
+@app.route('/users')
 def users():
-    sql = sql_connect("360")
+    sql = sql_connect('360')
     c = sql.cursor()
     games = c.execute("""
       SELECT SUM(sessions.end_time - sessions.start_time) AS total,
@@ -34,12 +34,12 @@ def users():
     """
     ).fetchall()
 
-    app.config.pagename = "Users"
-    return render_template("users.html", users = games)
+    app.config.pagename = 'Users'
+    return render_template('users.html', users = games)
 
 @app.route('/zscores')
 def zscores():
-    conn = sql_connect("360")
+    conn = sql_connect('360')
     cursor = conn.cursor()
     rows = cursor.execute("""
         SELECT plname, COUNT(ascended) AS number, role FROM games
@@ -54,12 +54,11 @@ def zscores():
     for player in sorted(scores.keys(), reverse=True):
         score_list.append(wwwnh.ZScore(player, scores[player]))
 
-    return render_template("zscores.html", scores = score_list,
-      roles = roles))
+    return render_template('zscores.html', scores = score_list, roles = roles)
 
 @app.route('/high_scores')
 def high_scores():
-    scores = sql_query("360",
+    scores = sql_query('360',
       """
       SELECT games.*,
         sum(sessions.end_time - sessions.start_time) AS total_time
