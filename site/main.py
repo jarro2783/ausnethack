@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+import flask
 import sqlite3
 import wwwnethack as wwwnh
 
@@ -36,18 +37,7 @@ def users():
     app.config.pagename = "Users"
     return render_template("users.html", users = games)
 
-def calculate_z(n):
-    factor = 1.0
-    z = 0
-    i = 0
-    while i < n:
-        z += factor
-        i += 1
-        factor /= 2
-
-    return z
-
-@app.route("/zscores")
+@app.route('/zscores')
 def zscores():
     conn = sql_connect("360")
     cursor = conn.cursor()
@@ -57,18 +47,7 @@ def zscores():
         GROUP BY plname, role
     """).fetchall()
 
-    scores = {}
-    roles = {}
-
-    for r in rows:
-        plname = r['plname']
-        role = r['role']
-        roles[role] = 0
-        if plname not in scores:
-            scores[plname] = {'roles' : {}, 'total' : 0}
-        zscore = calculate_z(r['number'])
-        scores[plname]["total"] += zscore
-        scores[plname]['roles'][role] = zscore
+    scores, roles = wwwnh.calculate_zscores(rows)
 
     score_list = []
 
@@ -78,7 +57,7 @@ def zscores():
     return render_template("zscores.html", scores = score_list,
       roles = sorted(roles.keys()))
 
-@app.route("/high_scores")
+@app.route('/high_scores')
 def high_scores():
     scores = sql_query("360",
       """
@@ -91,7 +70,7 @@ def high_scores():
       """
     )
 
-    return render_template("high_scores.html", scores = scores)
+    return render_template('high_scores.html', scores = scores)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
