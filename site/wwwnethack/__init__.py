@@ -1,7 +1,5 @@
-class ZScore:
-    def __init__(self, plname, zscore):
-        self.plname = plname
-        self.zscore = zscore
+""" wwwnethack utility package
+"""
 
 # Takes an array of games that have ascended, which is a dictionary with at
 # least the following keys:
@@ -14,31 +12,33 @@ class ZScore:
 # 'roles' maps to a dictionary of their zscores for each role.
 # - roles is a sorted array of roles
 def calculate_zscores(ascended):
+    """ Calculates the zscores of ascended games"""
     roles = {}
     scores = {}
 
-    for r in ascended:
-        plname = r['plname']
-        role = r['role']
+    for row in ascended:
+        plname = row['plname']
+        role = row['role']
         roles[role] = 0
         if plname not in scores:
             scores[plname] = {'roles' : {}, 'total' : 0}
 
         player = scores[plname]
 
-        zscore = calculate_z(r['number'])
+        zscore = calculate_z(row['number'])
         player['total'] += zscore
         player['roles'][role] = zscore
 
     return (scores, sorted(roles.keys()))
 
-def calculate_z(n):
+def calculate_z(games):
+    """Calculates a single zscore given the number of games won for a role"""
     factor = 1.0
-    z = 0
+    zscore = 0
     i = 0
-    while i < n:
-        z += factor
+    while i < games:
+        zscore += factor
         i += 1
         factor /= 2
 
-    return z
+    return zscore

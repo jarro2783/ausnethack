@@ -63,7 +63,7 @@ def zscores():
     score_list = []
 
     for player in sorted(scores.keys(), reverse=True):
-        score_list.append(wwwnh.ZScore(player, scores[player]))
+        score_list.append({'plname':player, 'zscore':scores[player]})
 
     return render_template('zscores.html', scores=score_list, roles=roles)
 
