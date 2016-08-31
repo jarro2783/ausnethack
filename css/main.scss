@@ -16,17 +16,15 @@ th {
   padding: 5px;
 }
 
-div {
-  .title-block {
-    font-size: 15pt;
-    padding-left: 5px;
-    padding-bottom: 5px;
-    margin: 2px;
-    border-left: 1px solid $header_color;
-    border-bottom: 1px solid $header_color;
-    display: inline-block;
-    width: 200px
-  }
+div.title-block {
+  font-size: 15pt;
+  padding-left: 5px;
+  padding-bottom: 5px;
+  margin: 2px;
+  border-left: 1px solid $header_color;
+  border-bottom: 1px solid $header_color;
+  display: inline-block;
+  width: 200px
 }
 
 .emphasize {
