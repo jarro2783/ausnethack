@@ -21,3 +21,5 @@ build test: runtests
 build sass: build_sass
     INPUT=css
     OUTPUT=static/css
+
+default sass
