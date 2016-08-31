@@ -7,8 +7,8 @@ import sass
 
 def main():
     parser = argparse.ArgumentParser(description='Compile sass')
-    parser.add_argument('--sourcedir')
-    parser.add_argument('--destdir')
+    parser.add_argument('--srcdir', dest='sourcedir')
+    parser.add_argument('--dstdir', dest='destdir')
     parser.add_argument('--minify',
         default=False, help='Minify the output', action='store_const',
         const=True)

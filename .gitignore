@@ -2,3 +2,4 @@
 *.pyc
 __pycache__/
 .ninja_*
+static/css/
