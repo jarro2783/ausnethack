@@ -1,0 +1,15 @@
+rule linter
+    command = python3 -m pylint site/$SOURCE
+
+rule runtests
+    command = python3 site/test.py
+
+build lint: phony lint-main lint-wwwnethack
+
+build lint-main: linter
+    SOURCE=main.py
+
+build lint-wwwnethack: linter
+    SOURCE=wwwnethack
+
+build test: runtests
