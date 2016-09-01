@@ -5,8 +5,9 @@ rule runtests
     command = python3 site/test.py
 
 rule build_sass
-    command = python3 src/compile_sass.py --srcdir $INPUT --dstdir $OUTPUT $
-      --minify
+    command = python3 src/compile_sass.py --input $in --output $out $
+      --minify --deps $in.d
+    depfile = $in.d
 
 build lint: phony lint-main lint-wwwnethack
 
@@ -18,8 +19,8 @@ build lint-wwwnethack: linter
 
 build test: runtests
 
-build sass: build_sass
-    INPUT=css
-    OUTPUT=static/css
+build static/css/main.css: build_sass css/main.scss
 
-default sass
+build all_sass: phony static/css/main.css
+
+default all_sass

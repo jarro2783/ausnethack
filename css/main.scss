@@ -1,20 +1,4 @@
-$header_color: #5092b9;
-
-table {
-  border: 1px solid;
-  border-collapse: collapse;
-}
-
-td {
-  border: 1px solid;
-  padding: 3px;
-}
-
-th {
-  border: 1px solid;
-  background-color: #DDDDDD;
-  padding: 5px;
-}
+@import 'base';
 
 div.title-block {
   font-size: 15pt;
