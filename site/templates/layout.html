@@ -8,9 +8,16 @@
     href="{{ url_for('static', filename='favicon.ico') }}" />
 </head>
 <body>
+<header>
 <div class="title-block">
 <a href="/">AusNethack</a>
 </div>
+</header>
+<nav>
+{% include "navbar.html" %}
+</nav>
+<main>
 {% block body %}{% endblock %}
+</main>
 </body>
 </html>
