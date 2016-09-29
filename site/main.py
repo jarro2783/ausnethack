@@ -72,11 +72,9 @@ def high_scores():
     """High scores page."""
 
     scores = sql_query('360', """
-        SELECT games.*,
-            sum(sessions.end_time - sessions.start_time) AS total_time
-        FROM games JOIN sessions ON sessions.game = games.id
+        SELECT *
+        FROM games
         WHERE score NOT NULL
-        GROUP BY games.id
         ORDER BY score DESC LIMIT 2000
         """)
 
