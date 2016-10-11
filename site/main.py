@@ -37,10 +37,10 @@ def users():
     sql = sql_connect('360')
     cursor = sql.cursor()
     games = cursor.execute("""
-      SELECT SUM(sessions.end_time - sessions.start_time) AS total,
+      SELECT SUM(games.playing_time) AS total,
         plname,
         COUNT(DISTINCT games.id) AS numgames
-      FROM games JOIN sessions ON games.id = sessions.game GROUP BY plname
+      FROM games GROUP BY plname ORDER by plname
     """).fetchall()
 
     app.config.pagename = 'Users'
