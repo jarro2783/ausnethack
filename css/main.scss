@@ -15,8 +15,17 @@ div.title-block {
   text-decoration: underline
 }
 
+div.wrapper {
+  position:relative;
+}
+
 nav {
-  float: left;
-  width: 200px;
-  height: 2000px;
+  position: absolute;
+  width: $nav_width;
+  height: 100%;
+}
+
+main {
+  position:relative;
+  margin-left: $nav_width;
 }
