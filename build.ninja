@@ -1,3 +1,5 @@
+OUTDIR = static
+
 rule linter
     command = python3 -m pylint site/$SOURCE
 
@@ -5,9 +7,13 @@ rule runtests
     command = python3 site/test.py
 
 rule build_sass
-    command = python3 src/compile_sass.py --input $in --output $out $
-      --minify --deps $in.d
+    command = python3 src/compile_sass.py --input $in --version $out $
+      --minify --deps $in.d --outdir $OUTDIR
     depfile = $in.d
+
+rule asset_map
+    command = rm -f $out; for f in $in;$
+      do echo "$${f#.versions/}: /$$(cat $$f)" >> $out; done
 
 build lint: phony lint-main lint-wwwnethack
 
@@ -19,8 +25,8 @@ build lint-wwwnethack: linter
 
 build test: runtests
 
-build static/css/main.css: build_sass css/main.scss
+build .versions/css/main.css: build_sass css/main.scss
 
-build all_sass: phony static/css/main.css
+build site/assets.map.yaml: asset_map .versions/css/main.css
 
-default all_sass
+default site/assets.map.yaml

@@ -4,3 +4,5 @@ __pycache__/
 .ninja_*
 static/css/
 *.d
+.versions/
+site/assets.map.yaml

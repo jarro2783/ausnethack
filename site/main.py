@@ -5,10 +5,12 @@ This is the main AusNethack web module.
 from flask import Flask, render_template
 import sqlite3
 import wwwnethack as wwwnh
+import yaml
 
 app = Flask(__name__, static_folder='../static')
 app.config.from_object('wwwconfig')
-#app.config.servername = 'AusNethack'
+
+asset_map = yaml.load(open('assets.map.yaml'))
 
 def sql_connect(game):
     """ Connect to the nethack sqlite database."""
@@ -23,6 +25,12 @@ def sql_query(game, query):
     conn = sql_connect(game)
     cursor = conn.cursor()
     return cursor.execute(query).fetchall()
+
+@app.context_processor
+def utility_functions():
+    def asset_url(path):
+        return asset_map[path]
+    return dict(asset_url=asset_url)
 
 @app.route('/')
 def main():
