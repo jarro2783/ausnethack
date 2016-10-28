@@ -3,6 +3,7 @@ This is the main AusNethack web module.
 """
 
 from flask import Flask, render_template
+import os
 import sqlite3
 import wwwnethack as wwwnh
 import yaml
@@ -10,7 +11,7 @@ import yaml
 app = Flask(__name__, static_folder='../static')
 app.config.from_object('wwwconfig')
 
-asset_map = yaml.load(open('assets.map.yaml'))
+asset_map = yaml.load(open(os.path.dirname(__file__) + '/assets.map.yaml'))
 
 def sql_connect(game):
     """ Connect to the nethack sqlite database."""
