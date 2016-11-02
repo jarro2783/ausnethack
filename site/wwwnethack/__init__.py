@@ -42,3 +42,36 @@ def calculate_z(games):
         factor /= 2
 
     return zscore
+
+def plural(unit, amount):
+    if amount == 1:
+        return unit
+    else:
+        return unit + 's'
+
+def format_human_readable(seconds):
+    formatted = []
+
+    units = [
+        (60, 'second'),
+        (60, 'minute'),
+        (24, 'hour'),
+        (365, 'day')
+    ]
+
+    remaining = seconds
+    for unit in units:
+        amount = remaining % unit[0]
+
+        if amount != 0:
+            formatted.append("{} {}".format(amount, plural(unit[1], amount)))
+
+        remaining = remaining // unit[0]
+
+        if remaining == 0:
+            break
+
+    if len(formatted) == 0:
+        return '0 seconds'
+    else:
+        return ' '.join(formatted[1::-1])

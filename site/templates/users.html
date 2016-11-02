@@ -11,7 +11,7 @@
 <tr>
   <td>{{user.plname}}</td>
   <td>{{user.numgames}}</td>
-  <td>{{user.total}}</td>
+  <td>{{user.total | human_readable}}</td>
 </tr>
 {% endfor %}
 </table>

@@ -11,7 +11,15 @@ import yaml
 app = Flask(__name__, static_folder='../static')
 app.config.from_object('wwwconfig')
 
-asset_map = yaml.load(open(os.path.dirname(__file__) + '/assets.map.yaml'))
+def dot_dirname(path):
+    name = os.path.dirname(path)
+
+    if name == '':
+        return '.'
+    else:
+        return name
+
+asset_map = yaml.load(open(dot_dirname(__file__) + '/assets.map.yaml'))
 
 def sql_connect(game):
     """ Connect to the nethack sqlite database."""
@@ -32,6 +40,10 @@ def utility_functions():
     def asset_url(path):
         return asset_map[path]
     return dict(asset_url=asset_url)
+
+@app.template_filter('human_readable')
+def human_readable_filter(seconds):
+    return wwwnh.format_human_readable(seconds)
 
 @app.route('/')
 def main():
