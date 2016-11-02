@@ -19,13 +19,14 @@ div.wrapper {
   position:relative;
 }
 
-nav {
-  position: absolute;
+nav#menu {
+  float: left;
   width: $nav_width;
-  height: 100%;
+  margin-left: -100%;
+  padding-left: 5px;
 }
 
 main {
-  position:relative;
+  float: left;
   margin-left: $nav_width;
 }

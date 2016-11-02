@@ -14,12 +14,12 @@
 </div>
 </header>
 <div class="wrapper">
-<nav>
-{% include "navbar.html" %}
-</nav>
 <main>
 {% block body %}{% endblock %}
 </main>
+<nav id="menu">
+{% include "navbar.html" %}
+</nav>
 </div>
 </body>
 </html>
