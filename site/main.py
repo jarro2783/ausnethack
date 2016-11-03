@@ -69,8 +69,7 @@ def users():
       FROM games GROUP BY plname ORDER by plname
     """).fetchall()
 
-    app.config.pagename = 'Users'
-    return render_template('users.html', users=games)
+    return render_template('users.html', users=games, pagename='Users')
 
 @app.route('/zscores')
 def zscores():
@@ -91,7 +90,11 @@ def zscores():
     for player in sorted(scores.keys(), reverse=True):
         score_list.append({'plname':player, 'zscore':scores[player]})
 
-    return render_template('zscores.html', scores=score_list, roles=roles)
+    return render_template(
+        'zscores.html',
+        scores=score_list,
+        roles=roles,
+        pagename='ZScores')
 
 @app.route('/high_scores')
 def high_scores():
@@ -104,7 +107,10 @@ def high_scores():
         ORDER BY score DESC LIMIT 2000
         """)
 
-    return render_template('high_scores.html', scores=scores)
+    return render_template(
+        'high_scores.html',
+        scores=scores,
+        pagename='High Scores')
 
 if __name__ == '__main__':
     app.run(debug=True, port=6500)
