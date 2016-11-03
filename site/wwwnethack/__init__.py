@@ -44,12 +44,14 @@ def calculate_z(games):
     return zscore
 
 def plural(unit, amount):
+    """Pluralise a word depending on the count."""
     if amount == 1:
         return unit
     else:
         return unit + 's'
 
 def format_human_readable(seconds):
+    """Format time as human readable with two units."""
     formatted = []
 
     units = [

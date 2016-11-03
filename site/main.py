@@ -12,6 +12,7 @@ app = Flask(__name__, static_folder='../static')
 app.config.from_object('wwwconfig')
 
 def dot_dirname(path):
+    """Dirname with a dot if empty."""
     name = os.path.dirname(path)
 
     if name == '':
@@ -19,6 +20,7 @@ def dot_dirname(path):
     else:
         return name
 
+# pylint:disable=invalid-name
 asset_map = yaml.load(open(dot_dirname(__file__) + '/assets.map.yaml'))
 
 def sql_connect(game):
@@ -37,12 +39,15 @@ def sql_query(game, query):
 
 @app.context_processor
 def utility_functions():
+    """Functions available in templates."""
     def asset_url(path):
+        """Generate a versioned asset url."""
         return asset_map[path]
     return dict(asset_url=asset_url)
 
 @app.template_filter('human_readable')
 def human_readable_filter(seconds):
+    """The human readable seconds filter or templates."""
     return wwwnh.format_human_readable(seconds)
 
 @app.route('/')
