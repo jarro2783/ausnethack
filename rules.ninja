@@ -1,0 +1,18 @@
+OUTDIR = static
+
+rule linter
+    command = python3 -m pylint site/$SOURCE
+
+rule runtests
+    command = python3 site/test.py
+
+rule build_sass
+    command = python3 src/compile_sass.py --input $in --version $out $
+      --minify --deps $in.d --outdir $OUTDIR
+    depfile = $in.d
+
+rule asset_map
+    command = rm -f $out; for f in $in;$
+      do echo "$${f#.versions/}: /$$(cat $$f)" >> $out; done
+
+
