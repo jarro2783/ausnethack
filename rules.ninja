@@ -7,12 +7,17 @@ rule runtests
     command = python3 site/test.py
 
 rule build_sass
-    command = python3 src/compile_sass.py --input $in --version $out $
-      --minify --deps $in.d --outdir $OUTDIR
+    command = python3 src/compile_sass.py --input $in $
+      --minify --deps $in.d --outdir .build
     depfile = $in.d
 
 rule asset_map
     command = rm -f $out; for f in $in;$
-      do echo "$${f#.versions/}: /$$(cat $$f)" >> $out; done
+      do echo "$${f#.build/}: /static/$$(dirname $${f#.build/})/$$(basename $$f .css)-$$(sha256sum $$f | cut -c 1-12).css" >> $out; done;
 
+rule rebuild_ninja
+    command = ./configure.py --assetmap $in
+    generator = 1
 
+rule copy
+    command = mkdir -p $$(dirname $out); cp $in $out

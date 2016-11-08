@@ -6,3 +6,5 @@ static/css/
 *.d
 .versions/
 site/assets.map.yaml
+.build
+build.ninja
