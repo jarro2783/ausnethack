@@ -1,25 +1,28 @@
 <!doctype html>
 <html>
-<head>
-<title>{{ pagename }} {% if pagename %}-{% endif %} 
-{{ config.SERVERNAME }}</title>
-<link rel="stylesheet" href="{{ asset_url('css/main.css') }}" />
-<link rel="shortcut icon"
-    href="{{ url_for('static', filename='favicon.ico') }}" />
-</head>
-<body>
-<header>
-<div class="title-block">
-<a href="/">AusNethack</a>
-</div>
-</header>
-<div class="wrapper">
-<main>
-{% block body %}{% endblock %}
-</main>
-</div>
-<nav id="menu">
-{% include "navbar.html" %}
-</nav>
-</body>
+    <head>
+        <title>{{ pagename }} {% if pagename %}-{% endif %} 
+        {{ config.SERVERNAME }}</title>
+        <link rel="stylesheet" href="{{ asset_url('css/main.css') }}" />
+        <link rel="shortcut icon"
+            href="{{ url_for('static', filename='favicon.ico') }}" />
+    </head>
+    <body>
+        <div class="document">
+            <header>
+                <div class="title-block">
+                    <a href="/">AusNethack</a>
+                </div>
+            </header>
+            <div class="wrapper">
+                <main>
+                    {% block body %}{% endblock %}
+                </main>
+            </div>
+            <nav id="menu">
+                {% include "navbar.html" %}
+            </nav>
+            <div class="clearer"></div>
+        </div>
+    </body>
 </html>

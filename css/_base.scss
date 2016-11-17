@@ -1,6 +1,10 @@
 $header_color: #5092b9;
 $nav_width: 200px;
 
+html {
+  overflow-y: scroll;
+}
+
 table {
   border: 1px solid;
   border-collapse: collapse;
@@ -15,4 +19,8 @@ th {
   border: 1px solid;
   background-color: #DDDDDD;
   padding: 5px;
+}
+
+.clearer {
+  clear: both;
 }
