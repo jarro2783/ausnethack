@@ -77,4 +77,4 @@ def format_human_readable(seconds):
     if len(formatted) == 0:
         return '0 seconds'
     else:
-        return ' '.join(formatted[-1::-1][0:2])
+        return ' '.join(formatted[-1:-3:-1])
