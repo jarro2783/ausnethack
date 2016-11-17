@@ -19,6 +19,8 @@ def main(assetmap=None):
     build_files = []
     version_files = []
 
+    default_rules = []
+
     for sass in source.css:
         parts = sass.split('.')
         css = "{}.css".format(parts[0])
@@ -29,8 +31,11 @@ def main(assetmap=None):
                     'src/compile_sass.py')
 
         build_files.append(built)
+        default_rules.append(built)
 
-    ninja.build('site/assets.map.yaml', 'asset_map', build_files)
+    assetmap = 'site/assets.map.yaml'
+    ninja.build(assetmap, 'asset_map', build_files)
+    default_rules.append(assetmap)
 
     if assetmap is not None:
         assets = open(assetmap)
@@ -38,9 +43,19 @@ def main(assetmap=None):
 
         for asset in versions:
             version = versions[asset]
-            ninja.build("." + version, 'copy', ".build/{}".format(asset))
+            target = '.'+version
+            ninja.build(target, 'copy', ".build/{}".format(asset))
+            default_rules.append(target)
 
     ninja.build('build.ninja', 'rebuild_ninja', 'site/assets.map.yaml')
+
+    # tests
+    ninja.newline()
+    ninja.build('test', 'phony', 'do_tests')
+    ninja.build('do_tests', 'runtests')
+    ninja.newline()
+
+    ninja.default(default_rules);
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='configure build')
