@@ -32,6 +32,7 @@ class TestFormatSeconds(unittest.TestCase):
         self.assertEqual(fhr(61), '1 minute 1 second')
         self.assertEqual(fhr(184), '3 minutes 4 seconds')
         self.assertEqual(fhr(3632), '1 hour 32 seconds')
+        self.assertEqual(fhr(7274), '2 hours 1 minute')
 
 def run_tests():
     unittest.main()

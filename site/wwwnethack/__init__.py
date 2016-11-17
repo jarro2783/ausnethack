@@ -57,8 +57,9 @@ def format_human_readable(seconds):
     units = [
         (60, 'second'),
         (60, 'minute'),
-        (24, 'hour'),
-        (365, 'day')
+        (60, 'hour'),
+        (24, 'day'),
+        (365, 'year'),
     ]
 
     remaining = seconds
@@ -76,4 +77,4 @@ def format_human_readable(seconds):
     if len(formatted) == 0:
         return '0 seconds'
     else:
-        return ' '.join(formatted[1::-1])
+        return ' '.join(formatted[-1::-1][0:2])
