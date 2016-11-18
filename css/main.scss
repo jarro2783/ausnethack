@@ -15,21 +15,47 @@ div.title-block {
   text-decoration: underline
 }
 
-div.wrapper {
-  float: left;
-  width: 100%;
-}
-
 nav#menu {
   float: left;
-  width: $nav_width;
+  width: $nav_width_small;
   margin-left: -100%;
-  padding-left: 5px;
+
+  @media (min-width: 786px) {
+    width: $nav_width_full;
+  }
+
+  ul {
+    padding-left: 20px
+  }
+
+  @media (min-width: 768px) {
+    ul {
+      padding-left: 30px
+    }
+  }
 }
 
-main {
-  float: left;
-  margin-left: $nav_width;
+@media (max-width: 500px) {
+  nav#menu {
+    float: none;
+    width: 100%;
+    margin: auto;
+  }
+
+  div.menugroup {
+    width: 50%;
+  }
+}
+
+@media (min-width: 500px) {
+  div.wrapper {
+    float: left;
+    width: 100%;
+  }
+
+  main {
+    margin-left: $nav_width_small;
+  }
 }
 
 div.document {
@@ -38,6 +64,10 @@ div.document {
 }
 
 @media (min-width: 768px) {
+  main {
+    margin-left: $nav_width_full;
+  }
+
   div.document {
     margin: 20px auto 0 auto;
   }
