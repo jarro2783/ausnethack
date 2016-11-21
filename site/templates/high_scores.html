@@ -22,8 +22,12 @@
     <td>{{ score.race }}</td>
     <td>{{ score.alignment }}</td>
     <td>{{ score.gender }}</td>
-    <td>{{ score.start_time }}</td>
-    <td>{{ score.end_time }}</td>
+    <td>
+    {% if score.start_time %} {{ score.start_time | format_time }} {% endif %}
+    </td>
+    <td>
+    {% if score.end_time %}{{ score.end_time | format_time }} {% endif %}
+    </td>
     <td>{{ score.playing_time | human_readable }}</td>
     <td>{{ score.score }}</td>
 </tr>

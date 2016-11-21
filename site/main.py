@@ -2,6 +2,7 @@
 This is the main AusNethack web module.
 """
 
+from datetime import datetime
 from flask import Flask, render_template
 import os
 import sqlite3
@@ -49,6 +50,11 @@ def utility_functions():
 def human_readable_filter(seconds):
     """The human readable seconds filter or templates."""
     return wwwnh.format_human_readable(seconds)
+
+@app.template_filter('format_time')
+def format_time(seconds):
+    """Format time in seconds as human readable."""
+    return datetime.fromtimestamp(seconds).strftime('%c')
 
 @app.route('/')
 def main():
