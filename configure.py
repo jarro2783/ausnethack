@@ -33,9 +33,9 @@ def main(assetmap=None):
         build_files.append(built)
         default_rules.append(built)
 
-    assetmap = 'site/assets.map.yaml'
-    ninja.build(assetmap, 'asset_map', build_files)
-    default_rules.append(assetmap)
+    assetpath = 'site/assets.map.yaml'
+    ninja.build(assetpath, 'asset_map', build_files)
+    default_rules.append(assetpath)
 
     if assetmap is not None:
         assets = open(assetmap)
