@@ -13,6 +13,7 @@
     <th>Start Time</th>
     <th>End Time</th>
     <th>Total playing time</th>
+    <th>Death</th>
     <th>Score</th>
 </tr>
 {% for score in scores %}
@@ -29,6 +30,7 @@
     {% if score.end_time %}{{ score.end_time | format_time }} {% endif %}
     </td>
     <td>{{ score.playing_time | human_readable }}</td>
+    <td>{{ score.death }}</td>
     <td>{{ score.score }}</td>
 </tr>
 {% endfor %}
