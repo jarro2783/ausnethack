@@ -24,7 +24,7 @@
     <td>{{ score.gender }}</td>
     <td>{{ score.start_time }}</td>
     <td>{{ score.end_time }}</td>
-    <td>{{ score.playing_time }}</td>
+    <td>{{ score.playing_time | human_readable }}</td>
     <td>{{ score.score }}</td>
 </tr>
 {% endfor %}
