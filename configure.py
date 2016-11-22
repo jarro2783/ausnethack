@@ -11,7 +11,7 @@ sourcedir = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, os.path.join(sourcedir, 'src'))
 import ninja_syntax
 
-def main(assetmap=None):
+def main():
     ninja = ninja_syntax.Writer(open('build.ninja', 'w'))
 
     ninja.include('rules.ninja')
@@ -40,8 +40,9 @@ def main(assetmap=None):
     ninja.build(assetpath, 'asset_map', build_files)
     default_rules.append(assetpath)
 
-    if assetmap is not None:
-        assets = open(assetmap)
+    assetmap = pathlib.Path('site/assets.map.yaml')
+    if assetmap.exists():
+        assets = open(str(assetmap))
         versions = yaml.load(assets)
 
         for asset in versions:
@@ -62,9 +63,4 @@ def main(assetmap=None):
     ninja.default(default_rules);
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='configure build')
-    parser.add_argument(
-        '--assetmap',
-        help='generate versioned rules from an asset map')
-    args = parser.parse_args()
-    main(args.assetmap)
+    main()
