@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import pathlib
 import sys
 import source_files as source
 import yaml
@@ -24,14 +25,16 @@ def main(assetmap=None):
     for sass in source.css:
         parts = sass.split('.')
         css = "{}.css".format(parts[0])
-        built = ".build/css/{}".format(css)
-        ninja.build(built,
+        basepath = pathlib.Path('static', 'css')
+        built = pathlib.Path('.build').joinpath(basepath, css)
+        map_path = pathlib.Path('.build', 'static', 'css', css+'.map')
+        ninja.build([str(built), str(map_path)],
                     'build_sass',
-                    "css/{}".format(sass),
+                    "static/css/{}".format(sass),
                     'src/compile_sass.py')
 
-        build_files.append(built)
-        default_rules.append(built)
+        build_files.append(str(built))
+        default_rules.append(str(built))
 
     assetpath = 'site/assets.map.yaml'
     ninja.build(assetpath, 'asset_map', build_files)
@@ -43,9 +46,10 @@ def main(assetmap=None):
 
         for asset in versions:
             version = versions[asset]
-            target = '.'+version
-            ninja.build(target, 'copy', ".build/{}".format(asset))
-            default_rules.append(target)
+            outpath = pathlib.Path('.'+version)
+            ninja.build(str(outpath),
+                        'copy', ".build/static/{}".format(asset))
+            default_rules.append(str(outpath))
 
     ninja.build('build.ninja', 'rebuild_ninja', 'site/assets.map.yaml')
 

@@ -33,7 +33,7 @@ def args_error(arg):
 
 def gather_deps(deps, src):
     def add_dep(path):
-        deps.append("css/_{}.scss".format(path))
+        deps.append("static/css/_{}.scss".format(path))
         return None
     return add_dep
 
@@ -46,9 +46,10 @@ def make_path(name):
 def build_destination(outdir, infile):
     parts = infile.split('.')
 
-    path = pathlib.Path(outdir)
-    path = path.joinpath("{}.css".format(parts[0]))
-    return str(path)
+    css = "{}.css".format(parts[0])
+    build = pathlib.Path('.build', css)
+    map_path = pathlib.Path(css+'.map')
+    return (str(build), str(map_path))
 
 def compile(source, outdir, minify, deps):
 
@@ -61,14 +62,24 @@ def compile(source, outdir, minify, deps):
         dependencies = []
         kwargs['importers'] = [(0, gather_deps(dependencies, source))]
 
-    result = sass.compile(filename=source, **kwargs)
+    dest,destmap = build_destination(outdir, source)
 
-    dest = build_destination(outdir, source)
+    result = sass.compile(
+        filename=source,
+        source_map_filename='maps/'+destmap,
+        **kwargs)
 
     make_path(dest)
 
     output = open(dest, 'w')
-    output.write(result)
+    output.write(result[0])
+    output.close()
+
+    map_out = pathlib.Path('.build', destmap)
+    make_path(map_out)
+
+    output = open(str(map_out), 'w')
+    output.write(result[1])
     output.close()
 
     if deps is not None:

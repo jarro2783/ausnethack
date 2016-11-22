@@ -13,7 +13,7 @@ rule build_sass
 
 rule asset_map
     command = rm -f $out; for f in $in;$
-      do echo "$${f#.build/}: /static/$$(dirname $${f#.build/})/$$(basename $$f .css)-$$(sha256sum $$f | cut -c 1-12).css" >> $out; done;
+      do echo "$${f#.build/static/}: /assets$$(dirname $${f#.build/static})/$$(basename $$f .css)-$$(sha256sum $$f | cut -c 1-12).css" >> $out; done;
 
 rule rebuild_ninja
     command = ./configure.py --assetmap $in

@@ -3,13 +3,13 @@ This is the main AusNethack web module.
 """
 
 from datetime import datetime
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 import os
 import sqlite3
 import wwwnethack as wwwnh
 import yaml
 
-app = Flask(__name__, static_folder='../static')
+app = Flask(__name__, static_folder='../assets/', static_url_path="/assets")
 app.config.from_object('wwwconfig')
 
 def dot_dirname(path):
@@ -61,6 +61,16 @@ def main():
     """Index page."""
     #app.config.update(dict(title='nethack'))
     return render_template('index.html')
+
+@app.route('/static/<path:path>')
+def sources(path):
+    """Source asset files in dev."""
+    return send_from_directory('../static', path)
+
+@app.route('/maps/<path:path>')
+def maps(path):
+    """Sourcemaps path in dev."""
+    return send_from_directory('../.build', path)
 
 @app.route('/users')
 def users():

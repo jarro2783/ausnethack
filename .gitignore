@@ -9,3 +9,4 @@ site/assets.map.yaml
 .build
 build.ninja
 site/local.cfg
+assets/
