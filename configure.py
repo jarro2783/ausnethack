@@ -54,6 +54,10 @@ def main():
 
     ninja.build('build.ninja', 'rebuild_ninja', 'site/assets.map.yaml')
 
+    # favicon.ico
+    ninja.build('assets/favicon.ico', 'copy', 'static/favicon.ico')
+    default_rules.append('assets/favicon.ico')
+
     # tests
     ninja.newline()
     ninja.build('test', 'phony', 'do_tests')
