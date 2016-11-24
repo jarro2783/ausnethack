@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block body %}
+<h2>Player Stats</h2>
+<table>
+<tr>
+<td>Player Name</td><td>{{ userdata.username }}</td>
+</tr>
+<td>Signed up</td><td>{{ userdata.created }}</td>
+</tr>
+</table>
+<h2>Nethack 3.6.0 Stats</h2>
+<table>
+<tr>
+<td>Games completed</td><td>{{ nh360.games }}</td>
+</tr>
+<tr>
+<td>Total points accumulated</td><td>{{ nh360.total }}</td>
+</tr>
+<tr>
+<td>Highest score</td><td>{{ nh360.high }}</td>
+</tr>
+<tr>
+<td>Games ascended</td><td>{{ nh360.ascended }}</td>
+</tr>
+</table>
+{% endblock %}

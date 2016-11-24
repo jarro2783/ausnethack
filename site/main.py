@@ -12,6 +12,12 @@ import yaml
 app = Flask(__name__, static_folder='../assets/', static_url_path="/assets")
 app.config.from_object('wwwconfig')
 
+try:
+    app.config.from_pyfile('local.cfg')
+except:
+    pass
+app.config.from_envvar('WWWNETHACK_CONFIG', True)
+
 def dot_dirname(path):
     """Dirname with a dot if empty."""
     name = os.path.dirname(path)
@@ -37,6 +43,13 @@ def sql_query(game, query):
     conn = sql_connect(game)
     cursor = conn.cursor()
     return cursor.execute(query).fetchall()
+
+def connect_users():
+    """ Connect to the gamelaunch users database."""
+
+    conn = sqlite3.connect(app.config['GAMELAUNCHDB'])
+    conn.row_factory = sqlite3.Row
+    return conn
 
 @app.context_processor
 def utility_functions():
@@ -127,6 +140,57 @@ def high_scores():
         'high_scores.html',
         scores=scores,
         pagename='High Scores')
+
+@app.route('/user/<username>')
+def user_page(username):
+    """The user page."""
+
+    connection = connect_users()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM users WHERE username = ?", [username])
+
+    user = cursor.fetchone()
+
+    nh360_conn = sql_connect('360')
+    cursor = nh360_conn.cursor()
+    cursor.execute(
+        'SELECT COUNT(*) AS games FROM games WHERE plname = ? AND death NOT NULL',
+        [username])
+
+    games = cursor.fetchone()['games']
+
+    cursor = nh360_conn.cursor()
+    cursor.execute(
+        'SELECT COUNT(*) AS asc FROM games WHERE plname = ? AND ascended = 1',
+        [username])
+
+    ascended = cursor.fetchone()['asc']
+
+    cursor = nh360_conn.cursor()
+    cursor.execute(
+        'SELECT MAX(score) AS maximum, SUM(score) as total FROM games where plname = ?',
+        [username])
+
+    scores = cursor.fetchone()
+    total = scores['total']
+    high = scores['maximum']
+
+    nh360 = {
+        'ascended': ascended,
+        'games': games,
+        'high': high,
+        'total': total,
+    }
+
+    if user is None:
+        return render_template('404.html'), 404
+    else:
+        return render_template(
+            'user_page.html',
+            userdata=user,
+            nh360=nh360,
+            pagename=username)
 
 if __name__ == '__main__':
     app.run(debug=True, port=6500)

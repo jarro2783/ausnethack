@@ -9,7 +9,7 @@
 </tr>
 {% for user in users %}
 <tr>
-  <td>{{user.plname}}</td>
+  <td><a href="user/{{user.plname}}">{{user.plname}}</a></td>
   <td>{{user.numgames}}</td>
   <td>{{user.total | human_readable}}</td>
 </tr>
