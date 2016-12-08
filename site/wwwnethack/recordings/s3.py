@@ -2,6 +2,7 @@
 
 import boto3
 import sys
+import traceback
 
 def make_url(bucket, strip):
     def make_url_tuple(key):
@@ -33,4 +34,5 @@ class ListFiles:
                     sorted(recordings))
         except Exception as err:
             print(err, file=sys.stderr)
+            traceback.print_exc(file=sys.stderr)
             return []
