@@ -2,6 +2,7 @@
 This is the main AusNethack web module.
 """
 
+import boto3
 from datetime import datetime
 from flask import Flask, render_template, send_from_directory
 import os
@@ -191,6 +192,17 @@ def user_page(username):
             userdata=user,
             nh360=nh360,
             pagename=username)
+
+@app.route('/recordings/<username>')
+def recordings(username):
+    client = wwwnh.get_recordings_backend(app.config)
+    files = client.list_files(username)
+
+    return render_template(
+        'player_recordings.html',
+        files=files,
+        username=username,
+        pagename='{}:recordings'.format(username))
 
 if __name__ == '__main__':
     app.run(debug=True, port=6500)

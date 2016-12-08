@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>tty recordings for {{ username }}</h1>
+{% if files %}
+    <ul>
+    {% for recording in files %}
+        <li><a href="{{recording[1]}}">{{recording[0]}}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    No recordings found for {{ username }}.
+{% endif %}
+{% endblock %}

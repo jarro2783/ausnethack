@@ -7,3 +7,6 @@ EMAIL = "jarro.2783@gmail.com"
 SITE_GITHUB = github + "/ausnethack"
 LAUNCHER_GITHUB = github + "/pygamelaunch"
 NETHACK_GITHUB = github + "/nethack"
+S3_RECORDINGS_CONFIG = {
+    'bucket' : 'ausnethack-recordings-compressed',
+}

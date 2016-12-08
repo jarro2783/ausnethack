@@ -1,6 +1,13 @@
 """ wwwnethack utility package
 """
 
+from . import recordings
+
+RECORDINGS = {
+    'local': recordings.local,
+    's3': recordings.s3,
+}
+
 # Takes an array of games that have ascended, which is a dictionary with at
 # least the following keys:
 # - plname: The name of the player
@@ -78,3 +85,10 @@ def format_human_readable(seconds):
         return '0 seconds'
     else:
         return ' '.join(formatted[-1:-3:-1])
+
+def get_recordings_backend(config):
+    """Gets the backend used for listing recordings based on the config.
+    """
+    backend = config['RECORDINGS_BACKEND']
+    if backend in RECORDINGS:
+        return RECORDINGS[backend].ListFiles(config)
