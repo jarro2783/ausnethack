@@ -1,6 +1,7 @@
 """ S3 file listing backend."""
 
 import boto3
+import sys
 
 def make_url(bucket, strip):
     def make_url_tuple(key):
@@ -30,5 +31,6 @@ class ListFiles:
                     self.__bucket,
                     len(name)+1),
                     sorted(recordings))
-        except:
+        except Exception as err:
+            print(err, file=sys.stderr)
             return []
