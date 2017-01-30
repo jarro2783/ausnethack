@@ -1,0 +1,45 @@
+<table>
+<tr>
+    <th>Player</th>
+    <th>Role</th>
+    <th>Race</th>
+    <th>Alignment</th>
+    <th>Gender</th>
+    <th>Start Time</th>
+    <th>End Time</th>
+    <th>Total playing time</th>
+    <th>Death</th>
+    <th>Score</th>
+</tr>
+{% for score in scores %}
+<tr {% if not score.score %} class="in_progress" {% endif %}>
+    <td>{{ score.plname }}</td>
+    <td>{{ score.role }}</td>
+    <td>{{ score.race }}</td>
+    <td>{{ score.alignment }}</td>
+    <td>{{ score.gender }}</td>
+    <td>
+    {% if score.start_time %} {{ score.start_time | format_time }} {% endif %}
+    </td>
+    <td>
+    {% if score.end_time %}{{ score.end_time | format_time }} {% endif %}
+    </td>
+    <td>{{ score.playing_time | human_readable }}</td>
+    <td>
+      {% if score.death %}
+        {{ score.death }}
+      {% else %}
+        N/A
+      {% endif %}
+    </td>
+    <td>
+      {% if score.score %}
+        {{ score.score }}
+      {% else %}
+        N/A
+      {% endif %}
+    </td>
+</tr>
+{% endfor %}
+</table>
+

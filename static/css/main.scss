@@ -79,3 +79,11 @@ div.document {
     margin-right: 5px;
   }
 }
+
+tr.in_progress td {
+  background-color: $in_progress;
+}
+
+span.in_progress {
+  background-color: $in_progress;
+}

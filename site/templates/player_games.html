@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<h1>Games played by {{ player }}</h1>
+
+<p>Note that rows highlighted <span class="in_progress">like this</span>
+are in progress.
+
+{% include "scores.html" %}
+
+{% endblock %}

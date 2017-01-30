@@ -2,7 +2,6 @@
 This is the main AusNethack web module.
 """
 
-import boto3
 from datetime import datetime
 from flask import Flask, render_template, send_from_directory
 import os
@@ -38,12 +37,12 @@ def sql_connect(game):
     conn.row_factory = sqlite3.Row
     return conn
 
-def sql_query(game, query):
+def sql_query(game, query, *args):
     """ Run a query on the database."""
 
     conn = sql_connect(game)
     cursor = conn.cursor()
-    return cursor.execute(query).fetchall()
+    return cursor.execute(query, args).fetchall()
 
 def connect_users():
     """ Connect to the gamelaunch users database."""
@@ -203,6 +202,26 @@ def recordings(username):
         files=files,
         username=username,
         pagename='{}:recordings'.format(username))
+
+@app.route('/user/<username>/games')
+def player_games(username):
+    """ List a player's games."""
+
+    nh360_conn = sql_connect('360')
+    cursor = nh360_conn.cursor()
+
+    scores = sql_query('360', """
+        SELECT *
+        FROM games
+        WHERE plname = ?
+        ORDER BY start_time ASC
+        """,
+        username)
+    
+    return render_template(
+        'player_games.html',
+        player=username,
+        scores=scores)
 
 if __name__ == '__main__':
     app.run(debug=True, port=6500)
