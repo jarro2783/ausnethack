@@ -207,9 +207,6 @@ def recordings(username):
 def player_games(username):
     """ List a player's games."""
 
-    nh360_conn = sql_connect('360')
-    cursor = nh360_conn.cursor()
-
     scores = sql_query('360', """
         SELECT *
         FROM games
