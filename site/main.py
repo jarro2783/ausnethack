@@ -6,6 +6,7 @@ from datetime import datetime
 from flask import Flask, render_template, send_from_directory
 import os
 import sqlite3
+from wwwnethack import db
 import wwwnethack as wwwnh
 import yaml
 
@@ -29,27 +30,6 @@ def dot_dirname(path):
 
 # pylint:disable=invalid-name
 asset_map = yaml.load(open(dot_dirname(__file__) + '/assets.map.yaml'))
-
-def sql_connect(game):
-    """ Connect to the nethack sqlite database."""
-
-    conn = sqlite3.connect(app.config['NETHACKDB'][game])
-    conn.row_factory = sqlite3.Row
-    return conn
-
-def sql_query(game, query, *args):
-    """ Run a query on the database."""
-
-    conn = sql_connect(game)
-    cursor = conn.cursor()
-    return cursor.execute(query, args).fetchall()
-
-def connect_users():
-    """ Connect to the gamelaunch users database."""
-
-    conn = sqlite3.connect(app.config['GAMELAUNCHDB'])
-    conn.row_factory = sqlite3.Row
-    return conn
 
 @app.context_processor
 def utility_functions():
@@ -89,7 +69,7 @@ def maps(path):
 def users():
     """Users page"""
 
-    sql = sql_connect('360')
+    sql = db.sql_connect(app.config, '360')
     cursor = sql.cursor()
     games = cursor.execute("""
       SELECT SUM(games.playing_time) AS total,
@@ -104,7 +84,7 @@ def users():
 def zscores():
     """Zscores page."""
 
-    conn = sql_connect('360')
+    conn = db.sql_connect(app.config, '360')
     cursor = conn.cursor()
     rows = cursor.execute("""
         SELECT plname, COUNT(ascended) AS number, role FROM games
@@ -129,7 +109,7 @@ def zscores():
 def high_scores():
     """High scores page."""
 
-    scores = sql_query('360', """
+    scores = db.sql_query(app.config, '360', """
         SELECT *
         FROM games
         WHERE score NOT NULL
@@ -145,14 +125,14 @@ def high_scores():
 def user_page(username):
     """The user page."""
 
-    connection = connect_users()
+    connection = db.connect_users(app.config)
     cursor = connection.cursor()
 
     cursor.execute("SELECT * FROM users WHERE username = ?", [username])
 
     user = cursor.fetchone()
 
-    nh360_conn = sql_connect('360')
+    nh360_conn = db.sql_connect(app.config, '360')
     cursor = nh360_conn.cursor()
     cursor.execute(
         'SELECT COUNT(*) AS games FROM games WHERE plname = ? AND death NOT NULL',
@@ -207,7 +187,7 @@ def recordings(username):
 def player_games(username):
     """ List a player's games."""
 
-    scores = sql_query('360', """
+    scores = db.sql_query(app.config, '360', """
         SELECT *
         FROM games
         WHERE plname = ?
