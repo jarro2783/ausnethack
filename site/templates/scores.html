@@ -34,7 +34,8 @@
     </td>
     <td>
       {% if score.score %}
-        {{ score.score }}
+        {{ score.score }} <br />
+        {{ score.conducts | render_conducts }}
       {% else %}
         N/A
       {% endif %}

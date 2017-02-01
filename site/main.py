@@ -3,7 +3,7 @@ This is the main AusNethack web module.
 """
 
 from datetime import datetime
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, Markup, render_template, send_from_directory
 import os
 import sqlite3
 from wwwnethack import db
@@ -38,6 +38,39 @@ def utility_functions():
         """Generate a versioned asset url."""
         return asset_map[path]
     return dict(asset_url=asset_url)
+
+@app.template_filter('render_conducts')
+def conducts_filter(conducts):
+    """ An html rendering of the conducts. """
+
+    if not isinstance(conducts, int):
+        return ""
+
+    text = [
+        ('F', 'Foodless'),
+        ('V', 'Vegetarian'),
+        ('V', 'Vegan'),
+        ('A', 'Atheist'),
+        ('W', 'Weaponless'),
+        ('P', 'Pacifist'),
+        ('I', 'Illiterate'),
+        ('Pp', 'Polypileless'),
+        ('Ps', 'Polyselfless'),
+        ('W', 'Wishless'),
+        ('Wa', 'ArtiWishing'),
+        ('G', 'Genocideless'),
+    ]
+
+    result = ""
+    for i in range(0, 12):
+        if conducts & 1:
+            result += '''<span
+                class="conduct {title}" title={title}>{short}</span>'''.format(
+                    short=text[i][0],
+                    title=text[i][1])
+        conducts >>= 1
+
+    return Markup(result)
 
 @app.template_filter('human_readable')
 def human_readable_filter(seconds):
@@ -187,14 +220,17 @@ def recordings(username):
 def player_games(username):
     """ List a player's games."""
 
-    scores = db.sql_query(app.config, '360', """
+    scores = db.sql_query(
+        app.config,
+        '360',
+        """
         SELECT *
         FROM games
         WHERE plname = ?
         ORDER BY start_time ASC
         """,
         username)
-    
+
     return render_template(
         'player_games.html',
         player=username,
