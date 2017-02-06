@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>
+Game config for {{username}}
+</h1>
+<ul>
+  <li>
+    <a href="/user/{{username}}">User page</a>
+  </li>
+</ul>
+<textarea style='width:90ex; height: 50ex'>
+{{ contents }}
+</textarea>
+{% endblock %}

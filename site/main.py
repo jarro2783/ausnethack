@@ -4,6 +4,7 @@ This is the main AusNethack web module.
 
 from datetime import datetime
 from flask import Flask, Markup, render_template, send_from_directory
+import functools
 import os
 import sqlite3
 from wwwnethack import db
@@ -154,6 +155,25 @@ def high_scores():
         scores=scores,
         pagename='High Scores')
 
+def find_user(f):
+    @functools.wraps(f)
+    def decorator(username):
+        connection = db.connect_users(app.config)
+        cursor = connection.cursor()
+
+        cursor.execute(
+            "SELECT * FROM users WHERE username = ?",
+            [username])
+
+        user = cursor.fetchone()
+
+        if user is None:
+            return render_template('404.html'), 404
+        else:
+            return f(user_row=user)
+
+    return decorator
+
 @app.route('/user/<username>')
 def user_page(username):
     """The user page."""
@@ -215,6 +235,18 @@ def recordings(username):
         files=files,
         username=username,
         pagename='{}:recordings'.format(username))
+
+@app.route('/user/<username>/config')
+@find_user
+def user_config(user_row):
+    username = user_row['username']
+    config_file = open(app.config['GAME_ROOT'] +
+                       '/users/' + username + '/nh360config.txt')
+    contents = config_file.read()
+    return render_template(
+        "user_config.html",
+        username=user_row['username'],
+        contents=contents)
 
 @app.route('/user/<username>/games')
 def player_games(username):
