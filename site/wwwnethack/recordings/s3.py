@@ -26,6 +26,11 @@ class ListFiles:
         cfg = config['S3_RECORDINGS_CONFIG']
         self.__bucket = cfg['bucket']
 
+    @staticmethod
+    def backend():
+        '''The recordings backend.'''
+        return 'S3'
+
     def list_files(self, name):
         '''List the recordings.'''
         try:
