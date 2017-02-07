@@ -12,6 +12,7 @@ def make_url_tuple(bucket, strip, key):
         bucket, key)
 
 def create_links(bucket, strip, keys):
+    '''Creates a tuple of link and pretty text for a key.'''
     return [
         make_url_tuple(
             bucket,
