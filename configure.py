@@ -62,8 +62,14 @@ def main():
     ninja.newline()
     ninja.build('test', 'phony', 'do_tests')
     ninja.build('do_tests', 'runtests')
-    ninja.newline()
 
+    # linter
+    ninja.newline()
+    ninja.build('lint', 'phony', ['lint_main', 'lint_lib'])
+    ninja.build('lint_main', 'linter', variables={'SOURCE':'main.py'})
+    ninja.build('lint_lib', 'linter', variables={'SOURCE':'wwwnethack'})
+
+    ninja.newline()
     ninja.default(default_rules);
 
 if __name__ == '__main__':

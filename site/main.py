@@ -6,7 +6,6 @@ from datetime import datetime
 from flask import Flask, Markup, render_template, send_from_directory
 import functools
 import os
-import sqlite3
 from wwwnethack import db
 import wwwnethack as wwwnh
 import yaml
@@ -16,6 +15,7 @@ app.config.from_object('wwwconfig')
 
 try:
     app.config.from_pyfile('local.cfg')
+# pylint:disable=bare-except
 except:
     pass
 app.config.from_envvar('WWWNETHACK_CONFIG', True)
@@ -156,8 +156,14 @@ def high_scores():
         pagename='High Scores')
 
 def find_user(f):
+    ''' Decorator to find a user for user pages. '''
     @functools.wraps(f)
     def decorator(username):
+        ''' Find a user page.
+
+        Returns 404 if it could not be found, otherwise calls
+        the real user page function.
+        '''
         connection = db.connect_users(app.config)
         cursor = connection.cursor()
 
@@ -227,6 +233,7 @@ def user_page(username):
 
 @app.route('/recordings/<username>')
 def recordings(username):
+    ''' List the recordings of a player.'''
     client = wwwnh.get_recordings_backend(app.config)
     files = client.list_files(username)
 
@@ -239,6 +246,7 @@ def recordings(username):
 @app.route('/user/<username>/config')
 @find_user
 def user_config(user_row):
+    ''' Game configuration.'''
     username = user_row['username']
     config_file = open(app.config['GAME_ROOT'] +
                        '/users/' + username + '/nh360config.txt')

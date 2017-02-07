@@ -1,3 +1,4 @@
+''' Database utility functions for wwwnethack.'''
 import sqlite3
 
 def sql_connect(config, game):
@@ -20,5 +21,3 @@ def connect_users(config):
     conn = sqlite3.connect(config['GAMELAUNCHDB'])
     conn.row_factory = sqlite3.Row
     return conn
-
-
