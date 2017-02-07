@@ -34,6 +34,29 @@ class TestFormatSeconds(unittest.TestCase):
         self.assertEqual(fhr(3632), '1 hour 32 seconds')
         self.assertEqual(fhr(7274), '2 hours 1 minute')
 
+class TestS3(unittest.TestCase):
+    def test_recordings(self):
+        recordings = [
+            'user/recording3.tty.bz2',
+            'user/recording1.tty.bz2',
+            'user/recording2.tty.bz2'
+        ]
+
+        pretty = wwwnethack.recordings.s3.create_links(
+            'bucket',
+            len('user/'),
+            recordings)
+
+        def make_pretty(prefix, recording):
+            return (recording, prefix + recording)
+
+        prefix = 'https://bucket.s3.amazonaws.com/user/'
+        self.assertEqual(pretty, [
+            make_pretty(prefix, 'recording1.tty.bz2'),
+            make_pretty(prefix, 'recording2.tty.bz2'),
+            make_pretty(prefix, 'recording3.tty.bz2'),
+        ])
+
 def run_tests():
     unittest.main()
     
