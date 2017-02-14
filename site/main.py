@@ -2,16 +2,22 @@
 This is the main AusNethack web module.
 """
 
+import base64
 from datetime import datetime
-from flask import Flask, Markup, render_template, send_from_directory
+from flask import Flask, Markup, render_template, request, send_from_directory
+from flask import redirect, url_for
+import flask
 import functools
 import os
 from wwwnethack import db
 import wwwnethack as wwwnh
+from wwwnethack import login
 import yaml
 
 app = Flask(__name__, static_folder='../assets/', static_url_path="/assets")
 app.config.from_object('wwwconfig')
+
+app.secret_key = wwwnh.get_secret_key()
 
 try:
     app.config.from_pyfile('local.cfg')
@@ -82,6 +88,26 @@ def human_readable_filter(seconds):
 def format_time(seconds):
     """Format time in seconds as human readable."""
     return datetime.fromtimestamp(seconds).strftime('%c')
+
+def csrf(handler):
+    '''Generate a csrf token for a request.'''
+    @functools.wraps(handler)
+    def generate_csrf(*args, **kwargs):
+        '''Generate the actual csrf.'''
+        flask.g.csrf = base64.b64encode(os.urandom(32)).decode('utf-8')
+
+        response = handler(*args, **kwargs)
+        response.set_cookie('csrf', flask.g.csrf)
+
+        return response
+
+    return generate_csrf
+
+@app.before_request
+def logged_in():
+    '''Check if a user is logged in every request.'''
+    user = login.validate_session(app.config, flask.session)
+    flask.g.user = user
 
 @app.route('/')
 def main():
@@ -158,7 +184,7 @@ def high_scores():
 def find_user(f):
     ''' Decorator to find a user for user pages. '''
     @functools.wraps(f)
-    def decorator(username):
+    def decorator(username, *args, **kwargs):
         ''' Find a user page.
 
         Returns 404 if it could not be found, otherwise calls
@@ -176,7 +202,7 @@ def find_user(f):
         if user is None:
             return render_template('404.html'), 404
         else:
-            return f(user_row=user)
+            return f(user_row=user, *args, **kwargs)
 
     return decorator
 
@@ -243,18 +269,35 @@ def recordings(username):
         username=username,
         pagename='{}:recordings'.format(username))
 
-@app.route('/user/<username>/config')
+@app.route('/user/<username>/config', methods=['GET', 'POST'])
 @find_user
+@csrf
 def user_config(user_row):
     ''' Game configuration.'''
+
+    user = flask.g.user
+    kwargs = {}
+
+    if request.method == 'POST':
+        if wwwnh.validate_csrf(request.form['csrf']):
+            if wwwnh.save_configuration(
+                    app.config,
+                    request.form['config'],
+                    user):
+                kwargs['savemessage'] = "Configuration saved successfully"
+            else:
+                kwargs['savemessage'] = 'Error saving configuration'
+        else:
+            kwargs['savemessage'] = "Invalid credentials"
     username = user_row['username']
     config_file = open(app.config['GAME_ROOT'] +
                        '/users/' + username + '/nh360config.txt')
     contents = config_file.read()
-    return render_template(
+    return flask.make_response(render_template(
         "user_config.html",
         username=user_row['username'],
-        contents=contents)
+        contents=contents,
+        **kwargs))
 
 @app.route('/user/<username>/games')
 def player_games(username):
@@ -276,5 +319,33 @@ def player_games(username):
         player=username,
         scores=scores)
 
+@app.route('/login', methods=['GET', 'POST'])
+def login_page():
+    '''The login page.'''
+    if request.method == 'POST':
+        form = request.form
+        response = flask.make_response()
+        response.status = '302'
+        if login.login_user(app.config, form['username'], form['password']):
+            response.headers['Location'] = wwwnh.redirect_login()
+        else:
+            flask.flash('Invalid credentials')
+            response.headers['Location'] = url_for('login_page')
+
+        return response
+
+    else:
+        return render_template(
+            'login.html'
+        )
+
+# This endpoint is vulnerable to a csrf attack
+# I'm not too worried about that since it just logs you out.
+@app.route('/logout')
+def logout_handler():
+    '''Log a user out.'''
+    login.logout(app.config)
+    return redirect(url_for('main'))
+
 if __name__ == '__main__':
-    app.run(debug=True, port=6500)
+    app.run(debug=True, port=6500, extra_files=['assets.map.yaml'])

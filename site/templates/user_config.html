@@ -8,7 +8,18 @@ Game config for {{username}}
     <a href="/user/{{username}}">User page</a>
   </li>
 </ul>
-<textarea style='width:90ex; height: 50ex'>
-{{ contents }}
-</textarea>
+<form method="POST">
+  <div>
+    <textarea
+      style='width:90ex; height: 50ex'
+      name="config">{{ contents }}</textarea>
+  </div>
+
+  {% if g.user and g.user.username == username %}
+  <div>
+    <input type="hidden" value="{{g.csrf}}" name="csrf" />
+    <button type="submit">Save</button> {{savemessage}}
+  </div>
+  {% endif %}
+</form>
 {% endblock %}

@@ -1,6 +1,13 @@
 """ wwwnethack utility package
 """
 
+import base64
+import flask
+import os
+import pathlib
+
+from urllib.parse import urlparse
+
 from . import recordings
 
 RECORDINGS = {
@@ -92,3 +99,48 @@ def get_recordings_backend(config):
     backend = config['RECORDINGS_BACKEND']
     if backend in RECORDINGS:
         return RECORDINGS[backend].ListFiles(config)
+
+def validate_csrf(form_csrf):
+    '''Validates the csrf prevention parameters.'''
+    origin = urlparse(flask.request.headers['Origin'])
+    return (form_csrf == flask.request.cookies['csrf'] and
+            origin.netloc == flask.request.headers['Host'])
+
+def open_config_file(root, user):
+    '''Opens a user's configuration file.'''
+    path = pathlib.Path(root, 'users', user, 'nh360config.txt')
+    return open(str(path), 'w')
+
+def save_configuration(config, user_config, user):
+    '''Save a user's configuration.'''
+    try:
+        with open_config_file(config['GAME_ROOT'],
+                              user['username']) as config_file:
+            config_file.write(user_config.replace('\r', ''))
+            config_file.close()
+        return True
+    except IOError as error:
+        print(error)
+        return False
+
+def redirect_login():
+    '''Generate a redirect for a login request.'''
+    headers = flask.request.headers
+    if 'Referer' in headers:
+        referer = urlparse(headers['Referer'])
+        if referer.netloc == flask.request.headers['Host'] and referer.path != '/login':
+            return headers['Referer']
+
+    return flask.url_for('main')
+
+def get_secret_key():
+    '''Reads or generates the secret key.'''
+    try:
+        secret_file = open('secret', 'r')
+        key = secret_file.read()
+    except FileNotFoundError:
+        with open('secret', 'w') as secret_file:
+            key = os.urandom(128)
+            secret_file.write(base64.b16encode(key).decode('utf-8'))
+
+    return key

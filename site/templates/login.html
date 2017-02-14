@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ asset_url('css/login.css') }}"/>
+{% endblock %}
+{% block body %}
+<h1>Login to AusNethack</h1>
+<div class='box'>
+  <form action="/login" method="POST">
+    <p>
+      Username: <input name="username" type="input"></input>
+    </p>
+    <p>
+      Password: <input name="password" type="password"></input>
+    </p>
+    <p>
+      <button type="submit">Login</button>
+    </p>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="login-fail">
+        {{ messages[0] }}
+        </div>
+      {% endif %}
+    {% endwith %}
+  </form>
+</div>
+{% endblock %}

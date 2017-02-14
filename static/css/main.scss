@@ -16,6 +16,11 @@ div.title-block {
   text-decoration: underline
 }
 
+div.box {
+  border: 1px solid;
+  padding: 10px;
+}
+
 nav#menu {
   float: left;
   width: $nav_width_small;

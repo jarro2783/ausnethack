@@ -1,0 +1,10 @@
+{% if g.user %}
+Welcome <a href="/user/{{g.user['username']}}">{{ g.user['username'] }}</a>.
+<a href="/logout">Logout</a>
+{% else %}
+<form action="/login" method="POST">
+  Username: <input type="text" size="12" name="username" />
+  Password: <input type="password" size="12" name="password" />
+  <button type="submit">Sign in</button>
+</form>
+{% endif %}

@@ -7,12 +7,16 @@
         <link rel="stylesheet" href="{{ asset_url('css/main.css') }}" />
         <link rel="shortcut icon"
             href="{{ url_for('static', filename='favicon.ico') }}" />
+        {% block head %}{% endblock %}
     </head>
     <body>
         <div class="document">
             <header>
                 <div class="title-block">
                     <a href="/">AusNethack</a>
+                </div>
+                <div style="float:right">
+                  {% include "quick_signin.html" %}
                 </div>
             </header>
             <div class="wrapper">
