@@ -93,3 +93,9 @@ tr.in_progress td {
 span.in_progress {
   background-color: $in_progress;
 }
+
+dl.news {
+  dt {
+    font-weight: bold; 
+  }
+}
