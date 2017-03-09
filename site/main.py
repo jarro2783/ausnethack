@@ -87,7 +87,7 @@ def human_readable_filter(seconds):
 @app.template_filter('format_time')
 def format_time(seconds):
     """Format time in seconds as human readable."""
-    return datetime.fromtimestamp(seconds).strftime('%c')
+    return datetime.fromtimestamp(seconds).strftime('%b %-d %Y %-H:%M')
 
 def csrf(handler):
     '''Generate a csrf token for a request.'''
