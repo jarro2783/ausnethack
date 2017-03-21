@@ -348,4 +348,15 @@ def logout_handler():
     return redirect(url_for('main'))
 
 if __name__ == '__main__':
-    app.run(debug=True, port=6500, extra_files=['assets.map.yaml'])
+    import argparse
+
+    parser = argparse.ArgumentParser('ausnethack')
+    parser.add_argument('--all', action='store_true')
+    args = parser.parse_args()
+
+    kwargs = {}
+
+    if args.all:
+        kwargs['host'] = '0.0.0.0'
+
+    app.run(debug=True, port=6500, extra_files=['assets.map.yaml'], **kwargs)
