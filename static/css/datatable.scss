@@ -1,0 +1,21 @@
+@import 'base';
+
+button.datatable {
+  padding: 8px;
+  background-color: white;
+  border: 1px solid #AAAAAA;
+}
+
+button.datatable:hover:enabled {
+  background-color: #AAAAAA;
+  color: white;
+}
+
+div.datatable-head {
+  text-align: right;
+  margin-bottom: 2px
+}
+
+span.datatable-range {
+  margin: 0 5px;
+}

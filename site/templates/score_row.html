@@ -1,0 +1,46 @@
+<tr {% if not score.score %} class="in_progress" {% endif %}>
+    <td>{{ score.plname }}</td>
+    <td>
+      {% if score.gender %} {{ score.gender }} <br /> {% endif %}
+      {% if score.alignment %} {{ score.alignment }} <br /> {% endif %}
+      {% if score.race %} {{ score.race }} <br /> {% endif %}
+      {% if score.role %} {{ score.role }} <br /> {% endif %}
+    </td>
+    <td>
+    {% if score.start_time %} {{ score.start_time | format_time }} {% endif %}
+    {% if score.start_time and score.end_time %}
+    <br /> --- <br />
+    {% endif %}
+    {% if score.end_time %}{{ score.end_time | format_time }} {% endif %}
+    </td>
+    <td>{{ score.playing_time | human_readable }}</td>
+    <td>
+      {% if score.death %}
+        {{ score.death }}
+      {% else %}
+        N/A
+      {% endif %}
+    </td>
+    <td>
+      {% if score.hp %}
+        {{ score.hp }}({{ score.hpmax }})
+      {% else %}
+        N/A
+      {% endif %}
+    </td>
+    <td>
+      {% if score.depth %}
+        {{ score.depth }}({{ score.maxdepth }})
+      {% else %}
+        N/A
+      {% endif %}
+    </td>
+    <td>
+      {% if score.score %}
+        {{ score.score }} <br />
+        {{ score.conducts | render_conducts }}
+      {% else %}
+        N/A
+      {% endif %}
+    </td>
+</tr>

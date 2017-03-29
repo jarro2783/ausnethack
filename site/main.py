@@ -8,6 +8,7 @@ from flask import Flask, Markup, render_template, request, send_from_directory
 from flask import redirect, url_for
 import flask
 import functools
+import json
 import os
 from wwwnethack import db
 import wwwnethack as wwwnh
@@ -173,11 +174,16 @@ def high_scores():
         SELECT *
         FROM games
         WHERE score NOT NULL
-        ORDER BY score DESC LIMIT 2000
+        ORDER BY score DESC LIMIT 10
+        """)
+
+    total = db.sql_query(app.config, '360', """
+        SELECT count(*) FROM GAMES WHERE score NOT NULL
         """)
 
     return render_template(
         'high_scores.html',
+        count=total[0][0],
         scores=scores,
         pagename='High Scores')
 
@@ -346,6 +352,54 @@ def logout_handler():
     '''Log a user out.'''
     login.logout(app.config)
     return redirect(url_for('main'))
+
+@app.route('/api/users')
+def api_users():
+    '''List users api call.'''
+    conn = db.connect_users(app.config)
+    cursor = conn.cursor()
+
+    all_users = cursor.execute(
+        """
+        SELECT username, email
+        FROM users
+        ORDER BY username ASC
+        """).fetchall()
+    return json.dumps(
+        [
+            {key: value for key, value in zip(row.keys(), tuple(row))}
+            for row in all_users
+        ])
+
+@app.route('/tables/high_scores')
+def api_high_scores():
+    '''High scores api call.'''
+
+    page = int(request.args.get('page')) or 0
+    print(page)
+
+    scores = db.sql_query(app.config, '360', """
+        SELECT *
+        FROM games
+        WHERE score NOT NULL
+        ORDER BY score DESC LIMIT 10 OFFSET {}
+        """.format(page * 10))
+
+    games = db.sql_query(app.config, '360', """
+        SELECT count(*)
+        FROM games
+        WHERE score NOT NULL
+        """)
+    total_rows = games[0][0]
+
+    rendered_rows = [render_template("score_row.html", score=row) for row in scores]
+    return json.dumps(
+        {
+            'count': total_rows,
+            'rows': rendered_rows,
+        }
+    )
+
 
 if __name__ == '__main__':
     import argparse

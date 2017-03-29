@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
 
-import argparse
+'''
+Configures the wwwnethack build.
+'''
+
 import os
 import pathlib
 import sys
 import source_files as source
 import yaml
 
-sourcedir = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0, os.path.join(sourcedir, 'src'))
+SOURCEDIR = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0, os.path.join(SOURCEDIR, 'src'))
 import ninja_syntax
 
 def main():
+    #pylint:disable=too-many-locals
+    '''The main entry point.'''
     ninja = ninja_syntax.Writer(open('build.ninja', 'w'))
 
     ninja.include('rules.ninja')
     ninja.newline()
 
     build_files = []
-    version_files = []
-
     default_rules = []
 
     for sass in source.css:
@@ -35,6 +38,25 @@ def main():
 
         build_files.append(str(built))
         default_rules.append(str(built))
+
+    for bundle, modules in source.js.items():
+        basepath = pathlib.Path('static', 'js')
+        built = pathlib.Path('.build').joinpath(basepath, bundle)
+        sources = [
+            str(pathlib.Path('static', 'js').joinpath(name))
+            for name in modules
+        ]
+        ninja.build(str(built), 'require_js', sources)
+        build_files.append(str(built))
+        default_rules.append(str(built))
+
+    ausnethack = '.build/static/js/ausnethack.js'
+    build_files.append(ausnethack)
+    ninja.build(
+        ausnethack,
+        'copy',
+        'static/js/ausnethack.js')
+    default_rules.append(ausnethack)
 
     assetpath = 'site/assets.map.yaml'
     ninja.build(assetpath, 'asset_map', build_files)
@@ -65,12 +87,28 @@ def main():
 
     # linter
     ninja.newline()
-    ninja.build('lint', 'phony', ['lint_main', 'lint_lib'])
-    ninja.build('lint_main', 'linter', variables={'SOURCE':'main.py'})
-    ninja.build('lint_lib', 'linter', variables={'SOURCE':'wwwnethack'})
+    ninja.build(
+        'lint',
+        'phony',
+        [
+            'lint_main',
+            'lint_lib',
+            'lint_configure',
+            'lint_require',
+        ])
+    ninja.build('lint_main', 'linter', variables={'SOURCE':'site/main.py'})
+    ninja.build('lint_lib', 'linter', variables={'SOURCE':'site/wwwnethack'})
+    ninja.build(
+        'lint_configure',
+        'linter',
+        variables={'SOURCE': 'configure.py', 'PPATH': 'src'})
+    ninja.build(
+        'lint_require',
+        'linter',
+        variables={'SOURCE': 'src/require.py'})
 
     ninja.newline()
-    ninja.default(default_rules);
+    ninja.default(default_rules)
 
 if __name__ == '__main__':
     main()

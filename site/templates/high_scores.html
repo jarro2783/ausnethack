@@ -1,7 +1,26 @@
 {% extends "layout.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ asset_url('css/datatable.css') }}" />
+{% endblock %}
+
 {% block body %}
 
 <h1>High Scores</h1>
 
 {% include "scores.html" %}
+<script type="text/javascript">
+onready(() => {
+  var datatable = require('datatable')
+  datatable.datatable(document.getElementById('scores'),
+    {
+      total: {{ count }},
+      source: '/tables/high_scores'
+    })
+});
+</script>
+{% endblock %}
+
+{% block foot %}
+<script type="text/javascript" src='{{ asset_url('js/high_scores.js') }}'></script>
 {% endblock %}

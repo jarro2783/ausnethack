@@ -1,7 +1,7 @@
 OUTDIR = static
 
 rule linter
-    command = python3 -m pylint site/$SOURCE
+    command = PYTHONPATH=$PPATH python3 -m pylint $SOURCE
 
 rule runtests
     command = python3 site/test.py
@@ -11,9 +11,11 @@ rule build_sass
       --minify --deps $in.d --outdir .build
     depfile = $in.d
 
+rule require_js
+  command = python3 src/require.py $in --output $out
+
 rule asset_map
-    command = rm -f $out; for f in $in;$
-      do echo "$${f#.build/static/}: /assets$$(dirname $${f#.build/static})/$$(basename $$f .css)-$$(sha256sum $$f | cut -c 1-12).css" >> $out; done;
+  command = src/build_asset_map.sh $out $in
 
 rule rebuild_ninja
     command = ./configure.py --assetmap $in
