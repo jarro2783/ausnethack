@@ -1,5 +1,5 @@
-This is the code for https://ausnethack.com, a
-[nethack](https://www.nethack.org) server hosted in Australia.
+This is the code for [AusNetHack](https://ausnethack.com), a
+[NetHack](https://www.nethack.org) server hosted in Australia.
 
-Build the code with `ninja`, test it with `ninja test`. We accept pull
-requests for improvements.
+Build the code with `ninja`, test it with `ninja test`, lint it with
+`ninja lint`. We accept pull requests for improvements.
