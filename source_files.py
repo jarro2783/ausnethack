@@ -6,6 +6,6 @@ css = [
 
 js = {
     'high_scores.js': [
-        'datatable.js'
+        'datatable.js',
     ]
 }

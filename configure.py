@@ -46,7 +46,7 @@ def main():
             str(pathlib.Path('static', 'js').joinpath(name))
             for name in modules
         ]
-        ninja.build(str(built), 'require_js', sources)
+        ninja.build(str(built), 'require_js', sources, ['src/require.js'])
         build_files.append(str(built))
         default_rules.append(str(built))
 
