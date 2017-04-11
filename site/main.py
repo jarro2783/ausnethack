@@ -376,13 +376,34 @@ def api_high_scores():
     '''High scores api call.'''
 
     page = int(request.args.get('page')) or 0
-    print(page)
+
+    if 'sort_column' in request.args:
+        sort = int(request.args.get('sort_column'))
+    else:
+        sort = -1
+
+    sort_columns = {
+        0: 'plname',
+        3: 'playing_time',
+        7: 'score',
+    }
+
+    if sort in sort_columns:
+        order_query = 'ORDER BY ' + sort_columns[sort]
+    else:
+        order_query = 'ORDER BY score'
+
+    if 'asc' in request.args:
+        order_query += ' ASC'
+    else:
+        order_query += ' DESC'
 
     scores = db.sql_query(app.config, '360', """
         SELECT *
         FROM games
         WHERE score NOT NULL
-        ORDER BY score DESC LIMIT 10 OFFSET {}
+        """ + order_query +
+        """ LIMIT 10 OFFSET {}
         """.format(page * 10))
 
     games = db.sql_query(app.config, '360', """

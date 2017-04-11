@@ -1,11 +1,15 @@
 'use strict';
 
 function Datatable(table, options) {
-  this.page = 0;
-  this.table = table;
-  this.source = options.source;
-  this.total = options.total || 0;
-  this.elements = {};
+  this.page = 0
+  this.table = table
+  this.source = options.source
+  this.total = options.total || 0
+  this.elements = {}
+  this.sortable = options.sortable || []
+  this.sort_column = options.sort_column || 0
+  this.ascending = false
+  this.sort_arrows = {}
 }
 
 Datatable.prototype.next_page = function() {
@@ -46,7 +50,18 @@ Datatable.prototype.refreshCounters = function() {
 }
 
 function datatable_request() {
-  ajax('GET', this.source + '?page=' + this.page,
+  var get = [
+    'page=' + this.page,
+    'sort_column=' + this.sort_column
+  ]
+
+  if (this.ascending) {
+    get.push('asc')
+  }
+
+  var get_string = get.join('&')
+
+  ajax('GET', this.source + '?' + get_string,
     (result) => {
       var data = JSON.parse(result);
       var table = this.table;
@@ -69,6 +84,45 @@ function datatable_request() {
     },
     (result) => {
     });
+}
+
+Datatable.prototype.order_by = function(index) {
+  this.sort_column = index
+  this.ascending = !this.ascending
+
+  for (var i in this.sort_arrows) {
+    if (i == index) {
+      var name = "sortable "
+      if (this.ascending) {
+        name += "sort-up"
+      } else {
+        name += "sort-down"
+      }
+      this.sort_arrows[i].className = name
+    } else {
+      this.sort_arrows[i].className = "sortable"
+    }
+  }
+
+  this.request()
+}
+
+Datatable.prototype.make_sortable = function (column, index) {
+  //the column is actually the TH object at the top of the column
+  //so append to its innerHTML
+
+  var inner = document.createElement('A')
+  inner.href = '#'
+  inner.innerHTML = column.innerHTML
+  column.replaceChild(inner, column.childNodes[0])
+
+  column.className = "sortable"
+
+  this.sort_arrows[index] = column
+
+  column.onclick = () => {
+    this.order_by(index)
+  }
 }
 
 function datatable(table, options) {
@@ -128,7 +182,17 @@ function datatable(table, options) {
 
   //get the columns
   var columns = header.children[0].children
-  console.log(columns.length + ' columns');
+  for (var sortable in dt.sortable) {
+    if (sortable > columns.length) {
+      break;
+    }
+
+    var index = dt.sortable[sortable]
+
+    dt.make_sortable(columns[index], index)
+  }
+
+  dt.sort_arrows[dt.sort_column].className = "sortable sort-down"
 
   var elements = dt.elements
   elements.total = total;

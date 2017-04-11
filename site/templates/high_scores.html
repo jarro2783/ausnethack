@@ -15,7 +15,9 @@ onready(() => {
   datatable.datatable(document.getElementById('scores'),
     {
       total: {{ count }},
-      source: '/tables/high_scores'
+      source: '/tables/high_scores',
+      sortable: [0, 3, 7],
+      sort_column: 7
     })
 });
 </script>
